@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask,  render_template, request
 import pickle
+from modelbuild import predict
 
 app = Flask(__name__)
 
@@ -46,11 +47,7 @@ def recommend():
         temperature = float(request.form.get("temperature"))
         humidity = float(request.form.get("humidity"))
         ph_value = float(request.form.get("ph_value"))
-        
-        with open("model_one.pkl", "rb") as f:
-            model = pickle.load(f)
-        
-        result = model.predict([[nitrogen, phosphorus, potassium, temperature, humidity, ph_value, rainfall]])
+        result = predict(nitrogen,potassium,phosphorus,rainfall,temperature,humidity,ph_value)
         recommended_crop = crops[result[0]]
         
         return render_template("home.html", crop=recommended_crop)
